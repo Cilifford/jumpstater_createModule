@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Modular Component</title>
+
+    <style>
+        *{
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box
+        }
+
+        .btn{
+            padding: 1rem; 
+            margin: 0.25rem; 
+            border: 0.25rem solid;
+            border-radius: 0.25rem;
+        }
+
+        .core{
+            background-color: #A7EBED;
+            border: 0.25rem solid #03F2F7;
+        }
+
+        .mid{
+            background-color: #51A3F7;
+            border: 0.25rem solid #0040F8;
+        }
+
+        .large{
+            background-color: #C994F0;
+            border: 0.25rem solid #9300FF;
+        }
+
+        .btn:hover{
+            background-color: white;
+            color: grey
+        }
+
+        .selector{
+            position: fixed; 
+            background-color:#FFBB00;
+            width: 20rem; 
+            border: 0.25rem solid white;
+            top: -50%;
+        }
+
+        .selector.show{
+            top: 15%
+        }
+
+        .module{
+            height: 2.5rem;
+            width: 5rem;
+            position: relative; 
+            padding: 1rem;
+            border: 0.25rem solid;
+            border-radius: 5px; 
+            margin-top: 0.25rem;
+        }
+
+        .module.core{
+            background-color: #A7EBED;
+            border: 0.25rem solid #03F2F7;
+        }
+
+        .module.mid{
+            background-color: #51A3F7;
+            border: 0.25rem solid #0040F8;
+        }
+
+        .module.large{
+            background-color: #C994F0;
+            border: 0.25rem solid #9300FF;
+        }
+
+    </style>
+</head>
+<body>
+        <!-- The Popup Form-->
+        <div class="selector" id="selector_form">
+            <div class="header">
+                <div class="title">Select Module Type</div>
+            </div>
+            <div class="body">
+                <button class="btn core" id="submit_core" value="Core">
+                    <span>Core</span>
+                </button>
+                <button class="btn mid" id="submit_mid" value="Mid">
+                    <span>Mid</span>
+                </button>
+                <button class="btn large" id="submit_large" value="Large">
+                    <span>Large</span>
+                </button>
+             </div>
+        </div>
+
+        <div class="canvas">
+            <div class="status" id="canvas_body">
+                <button id="add_task" data-target-modal="#selector_form">Add Module Here</button>
+                <div class="module"></div>
+            </div>
+        </div>
+
+        <script>
+            const btns = document.querySelector("[data-target-modal]")
+            btns.addEventListener("click", () => {
+                document.querySelector(btns.dataset.targetModal).classList.add("show")
+            })
+
+ 
+            const newModule = document.querySelectorAll(".btn")
+
+            for(let item of newModule){
+                item.addEventListener("click", function(){
+                    console.log(item)
+                    const newComponent_div = document.createElement("div")
+                    const input = item.value
+                    const text = document.createTextNode(input)
+                    console.log(text)
+
+                    newComponent_div.append(text)
+                    newComponent_div.classList.add("module")
+                    if(input === 'Core'){
+                        newComponent_div.classList.add("core");
+                    }
+
+                    else if(input === 'Mid'){
+                        newComponent_div.classList.add("mid");
+                    }
+
+                    else if(input === 'Large'){
+                        newComponent_div.classList.add("large");
+                    }
+
+                    newComponent_div.setAttribute("id",moduleID());
+                    canvas_body.appendChild(newComponent_div)
+                    selector_form.classList.remove("show")
+
+                })
+            }
+
+            function moduleID(){
+                var today = new Date();
+                var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var dateTime = date+' '+time;
+
+                console.log(dateTime)
+                return dateTime
+            }
+
+        </script>
+    
+    
+</body>
+</html>
