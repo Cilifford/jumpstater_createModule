@@ -13,6 +13,14 @@
             box-sizing: border-box
         }
 
+        .canvas{
+            width: 50rem;
+            height: 50rem;
+            border: 1px solid rgb(210, 205, 205);
+            padding: 0.5rem;
+            background-color:rgba(0, 0, 0, 0.05); 
+        }
+
         .btn{
             padding: 1rem; 
             margin: 0.25rem; 
@@ -41,25 +49,26 @@
         }
 
         .selector{
-            position: fixed; 
+            position: absolute; 
             background-color:#FFBB00;
             width: 20rem; 
             border: 0.25rem solid white;
             top: -50%;
         }
 
-        .selector.show{
-            top: 15%
-        }
-
         .module{
             height: 2.5rem;
             width: 5rem;
-            position: relative; 
+            position: absolute; 
             padding: 1rem;
             border: 0.25rem solid;
             border-radius: 5px; 
             margin-top: 0.25rem;
+            display: none; 
+        }
+
+        .module.show{
+            display: block; 
         }
 
         .module.core{
@@ -100,17 +109,39 @@
 
         <div class="canvas">
             <div class="status" id="canvas_body">
-                <button id="add_task" data-target-modal="#selector_form">Add Module Here</button>
                 <div class="module"></div>
             </div>
         </div>
 
         <script>
-            const btns = document.querySelector("[data-target-modal]")
-            btns.addEventListener("click", () => {
-                document.querySelector(btns.dataset.targetModal).classList.add("show")
-            })
+            const elCanvas = document.querySelector(".canvas")
+            const elPopup = document.querySelector(".selector")
 
+            let leftPos, topPos
+
+            function showPopup(e){
+                let elem = document.querySelector('.module');
+                let rect = elem.getBoundingClientRect();
+                console.log(rect)
+
+                for (const key in rect) {
+                    if (typeof rect[key] !== 'function') {
+                        let para = document.createElement('p');
+                        para.textContent  = `${key} : ${rect[key]}`;
+                        document.body.appendChild(para);
+                    }
+                }
+
+                leftPos = `${e.clientX + window.scrollX}px`
+                topPos = `${e.clientY + window.scrollY}px`
+                Object.assign(elPopup.style, {
+                    left: leftPos, 
+                    top: topPos,
+                    display: 'block', 
+                })
+            }
+
+            elCanvas.addEventListener("click", showPopup)
  
             const newModule = document.querySelectorAll(".btn")
 
@@ -123,7 +154,8 @@
                     console.log(text)
 
                     newComponent_div.append(text)
-                    newComponent_div.classList.add("module")
+                    newComponent_div.classList.add("module", "show")
+                    // newComponent_div.classList.add("show")
                     if(input === 'Core'){
                         newComponent_div.classList.add("core");
                     }
@@ -136,9 +168,12 @@
                         newComponent_div.classList.add("large");
                     }
 
+                    newComponent_div.style.left = leftPos
+                    newComponent_div.style.top = topPos
+
                     newComponent_div.setAttribute("id",moduleID());
                     canvas_body.appendChild(newComponent_div)
-                    selector_form.classList.remove("show")
+                    elPopup.style.display = "none"
 
                 })
             }
